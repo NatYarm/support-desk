@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { FaUser } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
 import { register, reset } from '../features/auth/authSlice';
+import Spinner from '../components/Spinner';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -26,7 +27,6 @@ const Register = () => {
     if (isError) {
       toast.error(message);
     }
-
     //Redirect when logged in
     if (isSuccess || user) {
       navigate('/');
@@ -52,6 +52,10 @@ const Register = () => {
       dispatch(register(userData));
     }
   };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <>
