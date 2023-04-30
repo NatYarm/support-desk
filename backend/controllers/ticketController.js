@@ -1,6 +1,5 @@
 const asyncHandler = require('express-async-handler');
 
-const User = require('../models/userModel');
 const Ticket = require('../models/ticketModel');
 
 // @desc    Get user tickets
@@ -25,7 +24,7 @@ const getTicket = asyncHandler(async (req, res) => {
 
   if (ticket.user.toString() !== req.user.id) {
     res.status(401);
-    throw new Error('Not authorized');
+    throw new Error('Not Authorized');
   }
 
   res.status(200).json(ticket);

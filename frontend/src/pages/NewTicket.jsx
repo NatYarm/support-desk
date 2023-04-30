@@ -2,14 +2,12 @@ import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { createTicket, reset } from '../features/tickets/ticketSlice';
+import { createTicket } from '../features/tickets/ticketSlice';
 import BackButton from '../components/BackButton';
 
 const NewTicket = () => {
   const { user } = useSelector((state) => state.auth);
-  const { isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.tickets
-  );
+
   const [name] = useState(user.name);
   const [email] = useState(user.email);
   const [product, setProduct] = useState('iPhone');
@@ -20,8 +18,13 @@ const NewTicket = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    dispatch(createTicket({ product, description }));
-    navigate('/tickets');
+    dispatch(createTicket({ product, description }))
+      .unwrap()
+      .then(() => {
+        navigate('/tickets');
+        toast.success('New ticket created');
+      })
+      .catch(toast.error);
   };
 
   return (
