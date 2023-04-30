@@ -2,18 +2,22 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getTicket, closeTicket } from '../features/tickets/ticketSlice';
+import { getNotes } from '../features/notes/noteSlice';
 import { toast } from 'react-toastify';
 import BackButton from '../components/BackButton';
+import NoteItem from '../components/NoteItem';
 import Spinner from '../components/Spinner';
 
 const Ticket = () => {
   const { ticket } = useSelector((state) => state.tickets);
+  const { notes } = useSelector((state) => state.notes);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { ticketId } = useParams();
 
   useEffect(() => {
     dispatch(getTicket(ticketId)).unwrap().catch(toast.error);
+    dispatch(getNotes(ticketId)).unwrap().catch(toast.error);
   }, [ticketId, dispatch]);
 
   // Close ticket
@@ -50,7 +54,13 @@ const Ticket = () => {
           <h3>Description of Issue</h3>
           <p>{ticket.description}</p>
         </div>
+        <h2>Notes</h2>
       </header>
+
+      {notes
+        ? notes.map((note) => <NoteItem key={note._id} note={note} />)
+        : ''}
+
       {ticket.status !== 'closed' && (
         <button onClick={onTicketClose} className="btn btn-block btn-danger">
           Close Ticket
